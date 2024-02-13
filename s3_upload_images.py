@@ -1,3 +1,4 @@
+import os
 import yaml
 import boto3
 from botocore.exceptions import ClientError
@@ -37,8 +38,10 @@ def upload_file(client, fileobj, bucket, key):
 def main():
     config = load_config()
     client = initiate_session(config, 's3')
-    filelist = upload.get_files()
-    for file in filelist:
+    filelist = [(os.path.join(root,file)) for root, dirs, files in os.walk(config[PATH]) for file in files]
+    images = [file for file in filelist if file.endswith(config[IMAGE_EXTENSIONS])]
+    docs = [file for file in filelist if not file.endswith(config[IMAGE_EXTENSIONS])]
+    for file in images:
       fileobj = file
       bucket = config['upload_bucket']
       key = 'testimg.jpg'
