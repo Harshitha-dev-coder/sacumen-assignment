@@ -1,33 +1,7 @@
-import os
-from configuration import PATH, IMAGE_EXTENSIONS
-
-def get_files():
-    """
-    Function to list all images and files from directories and subdirectories in a given path
-    return: success when it is called
-    """
-    filelist = [(os.path.join(root,file)) for root, dirs, files in os.walk(PATH) for file in files]
-    images = [file for file in filelist if file.endswith(IMAGE_EXTENSIONS)]
-    files = [file for file in filelist if not file.endswith(IMAGE_EXTENSIONS)]
-    if images:
-        upload_images_aws(images)
-    if files:
-        upload_docs_gcloud(files)
-    return "Success"
-
-
-def upload_images_aws(images):
-    """
-    Function to upload images to aws s3 bucket
-    param: images: list of image files
-    return: uploaded message on success or failure
-    """
-
-
-def upload_docs_gcloud(files):
-    """
-    Function to upload images to google cloud
-    param: files: list of  files
-    return: uploaded message on success or failure
-    """
-    
+Need to run s3_upload_images
+create s3bucket
+create iam group
+create iam programmatic access user
+create config with credentials (yml)
+create inline policy
+show aws console for getting s3 arn - aws s3api list-buckets
