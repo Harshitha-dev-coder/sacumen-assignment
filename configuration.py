@@ -1,2 +1,5 @@
-PATH = r''
-IMAGE_EXTENSIONS = tuple()
+PATH = 'path'
+IMAGE_EXTENSIONS = <tuple()># eg ('.png','JPG')
+aws_access_key_id: <access-key>
+aws_secret_access_key: <secret-key>
+upload_bucket: <bucket-name>
