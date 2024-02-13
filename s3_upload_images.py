@@ -2,7 +2,9 @@ import os
 import yaml
 import boto3
 from botocore.exceptions import ClientError
-import upload
+from gcloud import storage
+from oauth2client.service_account import ServiceAccountCredentials
+
 
 def load_config():
     """
@@ -55,7 +57,7 @@ def upload_file(client, fileobj, bucket, key):
 
 def main():
     """
-    Function to upload images to aws s3
+    Function to upload images to aws s3 and files to google cloud
     return: status: status of s3 instance
     """
     config = load_config()
@@ -63,6 +65,17 @@ def main():
     filelist = [(os.path.join(root,file)) for root, dirs, files in os.walk(config[PATH]) for file in files]
     images = [file for file in filelist if file.endswith(config[IMAGE_EXTENSIONS])]
     docs = [file for file in filelist if not file.endswith(config[IMAGE_EXTENSIONS])]
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict({
+    'type': 'service_account',
+    'client_id': os.environ['BACKUP_CLIENT_ID'],
+    'client_email': os.environ['BACKUP_CLIENT_EMAIL'],
+    'private_key_id': os.environ['BACKUP_PRIVATE_KEY_ID'],
+    'private_key': os.environ['BACKUP_PRIVATE_KEY'],})
+    client = storage.Client(credentials=credentials, project='myproject')
+    bucket = client.get_bucket('mybucket')
+    for file in docs:
+        blob = bucket.blob(file)
+        blob.upload_from_filename(file)
     for file in images:
       fileobj = file
       bucket = config['upload_bucket']
